@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../raylib/examples/core"
+		}
+	],
+	"settings": {}
+}
