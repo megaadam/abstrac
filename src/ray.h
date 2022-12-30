@@ -3,9 +3,10 @@
 #pragma once
 #include "raylib.h"
 
-const int screenWidth = 800;
-const int screenHeight = 450;
+const int defaultScreenWidth = 800;
+const int defaultScreenHeight = 450;
 const int defaultFps = 60;
 
-int rayWin(int w = screenWidth, int h = screenHeight, int fps = defaultFps);
-int rayWin2(int w = screenWidth, int h = screenHeight, int fps = defaultFps);
+int rayWin(int w = defaultScreenWidth, int h = defaultScreenHeight, int fps = defaultFps);
+int rayWin2(int w = defaultScreenWidth, int h = defaultScreenHeight, int fps = defaultFps);
+int rayWin3(int w = defaultScreenWidth, int h = defaultScreenHeight, int fps = defaultFps);

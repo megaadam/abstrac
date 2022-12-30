@@ -3,10 +3,11 @@
 #include "ray.h"
 
 #include <math.h>
+#include "util.h"
 
 int rayWin(int w, int h, int fps)
 {
-    InitWindow(screenWidth, screenHeight, "abstrac - first born baby");
+    InitWindow(defaultScreenWidth, defaultScreenHeight, "abstrac - first born baby");
     SetTargetFPS(fps);
     int tick = 0;
     while (!WindowShouldClose())    // Detect window close button or ESC key
@@ -24,8 +25,6 @@ int rayWin(int w, int h, int fps)
 
 int rayWin2(int w, int h, int fps)
 {
-    // Initialization
-    //--------------------------------------------------------------------------------------
     const int screenWidth = w;
     const int screenHeight = h;
 
@@ -42,19 +41,13 @@ int rayWin2(int w, int h, int fps)
 
 
     SetTargetFPS(fps);
-    //--------------------------------------------------------------------------------------
 
-    // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
         // Update
-        //----------------------------------------------------------------------------------
         float rotation = 60.0f*GetTime();   // Rotate the rectangles, 60 degrees per second
 
-        //----------------------------------------------------------------------------------
         // Draw
-        //----------------------------------------------------------------------------------
-
         BeginDrawing();
             ClearBackground(BLACK);
             BeginBlendMode(BLEND_ADDITIVE);
@@ -62,6 +55,44 @@ int rayWin2(int w, int h, int fps)
             DrawRectanglePro(rec2, origin2, rotation/2.0, DARKBROWN);
             DrawRectanglePro(rec3, origin, rotation/2.0, DARKPURPLE);
         EndDrawing();
-        //----------------------------------------------------------------------------------
     }
+    return 0;
+}
+
+int rayWin3(int w, int h, int fps)
+{
+    const int screenWidth = w;
+    const int screenHeight = h;
+
+    const float count = 5.0;
+    const float spacing = w / count;
+
+    SetConfigFlags(FLAG_MSAA_4X_HINT);
+    InitWindow(screenWidth, screenHeight, "abstrac - Test #3");
+
+    SetTargetFPS(fps);
+
+    while (!WindowShouldClose())    // Detect window close button or ESC key
+    {
+        // Update
+        // Draw
+        BeginDrawing();
+            ClearBackground(BLACK);
+            BeginBlendMode(BLEND_ADDITIVE);
+            for(int x=0; x < count; ++x) {
+                for(int y=0; y < count -1; ++y) {
+                    float xpos =(float)spacing/2 + x * spacing;
+                    float ypos =(float)spacing/2 + y * spacing;
+
+                    DrawCircleV(Vector2{xpos, ypos}, spacing*0.6, rndHLS(0, 1, 0.3, 0.6, 0.6, 1.0));
+                }
+
+            }
+
+        EndDrawing();
+
+
+    }
+
+    return 0;
 }
