@@ -10,3 +10,4 @@ const int defaultFps = 60;
 int rayWin(int w = defaultScreenWidth, int h = defaultScreenHeight, int fps = defaultFps);
 int rayWin2(int w = defaultScreenWidth, int h = defaultScreenHeight, int fps = defaultFps);
 int rayWin3(int w = defaultScreenWidth, int h = defaultScreenHeight, int fps = defaultFps);
+int rayWin4(int w = defaultScreenWidth, int h = defaultScreenHeight, int fps = defaultFps);

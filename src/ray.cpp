@@ -5,6 +5,9 @@
 #include <math.h>
 #include "util.h"
 
+Texture2D getTex(int w, int h, int32_t col);
+Texture2D getTex2(int w, int h);
+
 int rayWin(int w, int h, int fps)
 {
     InitWindow(defaultScreenWidth, defaultScreenHeight, "abstrac - first born baby");
@@ -74,8 +77,6 @@ int rayWin3(int w, int h, int fps)
 
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
-        // Update
-        // Draw
         BeginDrawing();
             ClearBackground(BLACK);
             BeginBlendMode(BLEND_ADDITIVE);
@@ -84,15 +85,91 @@ int rayWin3(int w, int h, int fps)
                     float xpos =(float)spacing/2 + x * spacing;
                     float ypos =(float)spacing/2 + y * spacing;
 
-                    DrawCircleV(Vector2{xpos, ypos}, spacing*0.6, rndHLS(0, 1, 0.3, 0.6, 0.6, 1.0));
+                    // DrawCircleV(Vector2{xpos, ypos}, spacing*0.6, rndHLS(0, 1, 0.3, 0.6, 0.6, 1.0));
+                    Color c1 = rndHLS(0, 1, 0.3, 0.6, 0.6, 1.0);
+                    Color c2 = c1;
+                    c2.a = 0.0;
+                    DrawCircleGradient(xpos, ypos, spacing*0.9, rndHLS(0, 1, 0.3, 0.6, 0.6, 0.8), c2);
                 }
-
             }
 
         EndDrawing();
-
 
     }
 
     return 0;
 }
+
+
+int rayWin4(int w, int h, int fps)
+{
+    InitWindow(w, h, "abstrac - Test #4");
+
+    SetTargetFPS(fps);
+    Texture2D tex1 = getTex2(w, h);
+    Texture2D tex2 = getTex2(w, h);
+
+    int count = 0;
+    while (!WindowShouldClose())    // Detect window close button or ESC key
+    {
+        BeginDrawing();
+        //BeginBlendMode(BLEND_ADDITIVE);
+
+        if(++count % 2 == 0)
+        {
+            DrawTexture(tex1, 0, 0, WHITE);
+        }
+        else
+        {
+            DrawTexture(tex2, 0, 0, WHITE);
+        }
+        EndDrawing();
+    }
+}
+
+Texture2D getTex(int w, int h, int32_t col) {
+    int32_t* raw = (int32_t*)malloc(sizeof(int32_t) * w * h);
+    for (int y = 0; y < h; ++y)
+    {
+        for (int x = 0; x < w; ++x)
+        {
+            raw[y*w + x] = col;
+        }
+    }
+
+    SetConfigFlags(FLAG_MSAA_4X_HINT);
+
+    Image img{raw, w, h, 1, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8};
+
+    ImageDrawCircleLinesV(&img, Vector2{w/2.0f, h*2.0f/3.0f}, h/4.0f, RAYWHITE);
+
+    Texture2D tex = LoadTextureFromImage(img);
+    UnloadImage(img);
+
+    return tex;
+}
+
+Texture2D getTex2(int w, int h) {
+
+    RenderTexture2D target = LoadRenderTexture(w, h);
+
+    const float count = 5.0;
+    const float spacing = w / count;
+    BeginTextureMode(target);
+        ClearBackground(BLACK);
+        for(int x=0; x < count; ++x) {
+            for(int y=0; y < count -1; ++y) {
+                float xpos =(float)spacing/2 + x * spacing;
+                float ypos =(float)spacing/2 + y * spacing;
+
+                Color c1 = rndHLS(0, 1, 0.3, 0.6, 0.6, 1.0);
+                Color c2 = c1;
+                c2.a = 0.0f;
+                DrawCircleGradient(xpos, ypos, spacing*0.9, rndHLS(0, 1, 0.3, 0.6, 0.6, 0.8), c2);
+            }
+        }
+    EndTextureMode();
+
+    return target.texture;
+}
+
