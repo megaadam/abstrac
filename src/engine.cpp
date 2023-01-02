@@ -8,5 +8,5 @@
 int main(int argc, char** argv)
 {
     std::cout << "Hi there, World!" << std::endl;
-    return rayWin4(defaultScreenWidth, defaultScreenHeight, 1.0);
+    return rayWin5(defaultScreenWidth, defaultScreenHeight, 60.0);
 }

@@ -3,6 +3,8 @@
 #include "ray.h"
 
 #include <math.h>
+
+#include "starfield.h"
 #include "util.h"
 
 Texture2D getTex(int w, int h, int32_t col);
@@ -34,9 +36,9 @@ int rayWin2(int w, int h, int fps)
     SetConfigFlags(FLAG_MSAA_4X_HINT);
     InitWindow(screenWidth, screenHeight, "abstrac - Test #2");
 
-    Rectangle rec1 = { float(w)/4 - 80, float(h)/2, float(w)/1.7, float(h)/2 };
+    Rectangle rec1 = { float(w)/4 - 80, float(h)/2, float(w)/1.7f, float(h)/2 };
     Rectangle rec2 = { float(w)/4*2 - 80, float(h)/2, float(w)/2, float(h)/4 };
-    Rectangle rec3 = { float(w)/4*3 -80, float(h)/2, float(w)/1.7, float(h)/2 };
+    Rectangle rec3 = { float(w)/4*3 -80, float(h)/2, float(w)/1.7f, float(h)/2 };
 
     Vector2 origin = { float(w)/4, float(h)/4};
     Vector2 origin2 = { float(w)/4, float(h)/8};
@@ -125,6 +127,25 @@ int rayWin4(int w, int h, int fps)
         }
         EndDrawing();
     }
+
+    return 0;
+}
+
+int rayWin5(int w, int h, int fps)
+{
+    InitWindow(w, h, "abstrac - Starfield");
+
+    SetTargetFPS(fps);
+    Starfield starfield(w, h, fps);
+    while (!WindowShouldClose())    // Detect window close button or ESC key
+    {
+        BeginDrawing();
+        DrawTexture(starfield.get(GetTime()), 0, 0, WHITE);
+
+        EndDrawing();
+    }
+
+    return 0;
 }
 
 Texture2D getTex(int w, int h, int32_t col) {
