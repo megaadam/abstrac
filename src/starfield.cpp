@@ -1,6 +1,8 @@
 // MIT License -- Copyright (c) 2023 Adam Horvath
 
 #include "starfield.h"
+#include <math.h>
+
 #include "util.h"
 Starfield::Starfield(int w, int h, int fps, std::unique_ptr<StarfieldCfg> cfg)
 {
@@ -21,19 +23,22 @@ Starfield::Starfield(int w, int h, int fps, std::unique_ptr<StarfieldCfg> cfg)
 Texture Starfield::get(float time)
 {
     static float lastTime = 0.0;
-
+    static float rot = 0.0;
     float deltaTime = lastTime > 0 ? time - lastTime : 0.0;
     lastTime = time;
-    static RenderTexture2D target = LoadRenderTexture(m_width, m_height);
+    auto res = m_cfg->canvasRes;
+    static RenderTexture2D canvas = LoadRenderTexture(res, res);
+    static RenderTexture2D cam = LoadRenderTexture(m_width, m_height);
+
     SetConfigFlags(FLAG_MSAA_4X_HINT);
 
-    BeginTextureMode(target);
+    BeginTextureMode(canvas);
         ClearBackground(BLACK);
 
         for(auto& star: m_stars)
         {
-            float x = (star.x * 100 / star.z + 100) * m_width / 200.0;
-            float y = (star.y * 100 / star.z + 100) * m_height / 200.0;
+            float x = (star.x * 100 / star.z + 100) * res / 200.0;
+            float y = (star.y * 100 / star.z + 100) * res / 200.0;
             float rad = star.radius * 100 / star.z;
 
             Color starCol = star.col;
@@ -53,7 +58,16 @@ Texture Starfield::get(float time)
         }
     EndTextureMode();
 
-    return target.texture;
+    BeginTextureMode(cam);
+        float canvasScale = res / sqrt(m_width * m_width + m_height * m_height);
+        float xorig = res / 2 - m_width * canvasScale / 2;
+        float yorig = res / 2 - m_height * canvasScale / 2;
+        Rectangle canvasRect{xorig, yorig, m_width * canvasScale, m_height * canvasScale};
+        Rectangle camRect{(float)m_width/2, (float)m_height/2, (float)m_width * 2, (float)m_height * 2};
+        DrawTexturePro(canvas.texture, canvasRect, camRect, Vector2{m_width, m_height}, rot, Color{255, 255, 255, 255});
+    EndTextureMode();
+    rot += deltaTime * m_cfg->rotSpeed;
+    return cam.texture;
 }
 
 Star Starfield::newStar(bool maxDepth, float fade)

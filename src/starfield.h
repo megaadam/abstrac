@@ -33,12 +33,14 @@ public:
 class StarfieldCfg {
     public:
         int count = 888;
-        float zSpeed = 40;  // screen units per s
-        float rotPS = 0.0;
-        float minRadius = 0.9;
-        float maxRadius = 8.0;
+        float zSpeed = 40;  // screen units / s
+        float rotSpeed = 3.0;  // degrees / s
+        float minRadius = 2.9; // Radius in canvas pixels
+        float maxRadius = 11.0;
         float camRatio = 1.0;
         float depthRatio = 8;
+
+        float canvasRes = 2000; // a square canvas in pixels x pixels
 
         // Star colour minmax (H)LS
         float minL = 0.6;
