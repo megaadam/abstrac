@@ -3,6 +3,25 @@
 #include "util.h"
 #include <random>
 
+float interpol(float time, float startTime, float endTime, float f1, float f2)
+{
+    time = std::max(time, std::min(time, endTime)); // clamp time between start & end
+
+    float r = (time - startTime) / (endTime - startTime);
+    return f1 * (1.0 - r) + f2 * r;
+}
+
+
+Vector3 interpol(float time, float startTime, float endTime, Vector3 v1, Vector3 v2)
+{
+    return Vector3 {
+        interpol(time, startTime, endTime, v1.x, v2.x),
+        interpol(time, startTime, endTime, v1.y, v2.y),
+        interpol(time, startTime, endTime, v1.z, v2.z),
+    };
+}
+
+
 Color rndHLS(float minH, float maxH, float minL, float maxL, float minS, float maxS, int a) {
     std::random_device r;
     std::default_random_engine eng(r());

@@ -56,6 +56,16 @@ Texture Starfield::get(float time)
                 star = newStar(true, 0.0);
             }
         }
+
+        Star* starfall = m_starfall.get(time);
+        if (starfall != nullptr)
+        {
+            float x = (starfall->x * 100 / starfall->z + 100) * res / 200.0;
+            float y = (starfall->y * 100 / starfall->z + 100) * res / 200.0;
+            float rad = starfall->radius * 100 / starfall->z;
+            DrawCircleGradient(x, y, rad, starfall->col, Color{255, 255, 255, 0});
+        }
+
     EndTextureMode();
 
     BeginTextureMode(cam);
@@ -85,3 +95,66 @@ Star Starfield::newStar(bool maxDepth, float fade)
     return Star(coord_dist(eng) * z / 100 / depthSqueze,
                 coord_dist(eng) * z / 100 / depthSqueze, z, radius_dist(eng), col, fade);
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+// class Starfall
+Starfall::Starfall()
+{
+}
+
+Starfall::Starfall(std::unique_ptr<StarfallCfg> cfg)
+{
+    m_cfg = std::unique_ptr<StarfallCfg> (new StarfallCfg{});
+}
+
+
+
+Star* Starfall::get(float time)
+{
+    static std::random_device dev;
+    static std::default_random_engine eng(dev());
+    static std::uniform_real_distribution<float> arrival_dist(m_cfg->hiatus * 0.5, m_cfg->hiatus * 1.5);
+    //static std::uniform_real_distribution<float> depth_dist(minDepth * 100, maxDepth * 100);
+    static std::uniform_real_distribution<float> depth_dist(m_cfg->minDepth, m_cfg->maxDepth);
+
+    static std::uniform_real_distribution<float> coord_dist(-100.0, 100.0);
+    static std::uniform_real_distribution<float> lifetime_dist(m_cfg->minLife, m_cfg->maxLife);
+
+    static float nextArrival = time + arrival_dist(eng);
+    static bool alive = false;
+
+    if (time < nextArrival) {
+        return nullptr;
+
+    }
+
+    if (alive == false)
+    {
+        alive = true;
+        // create new startfall
+
+        float z1 = depth_dist(eng);
+        float z2 = depth_dist(eng);
+
+        startPos = {coord_dist(eng), coord_dist(eng), z1};
+        endPos = {coord_dist(eng), coord_dist(eng), z2};
+
+        startTime = time;
+        endTime = startTime + lifetime_dist(eng);
+    }
+
+    if (time > endTime) {
+        alive = false;
+        nextArrival = time + arrival_dist(eng);
+        return nullptr;
+    }
+
+    auto pos = interpol(time, startTime, endTime, startPos, endPos);
+    star.x = pos.x;
+    star.y = pos.y;
+    star.z = pos.z;
+
+    return &star;
+}
+
