@@ -20,8 +20,8 @@
 * Save the Planet - RAM loop !
     * keep RAW ?
     * keep Encoded and manage timestamps ?
-* REST integration
-* Chat integration
+* REST integration, backdoor to jump in schedule
+* Chat integration, like an **animated** "Hi there user42!"
 
 ### Cfg
 * yaml/JSON -> dict tree or what ?

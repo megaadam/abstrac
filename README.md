@@ -10,6 +10,7 @@ Streaming Abstract Pixel Art
 <img src="./media/starfield1.png" alt="drawing" width="400"/>
 <img src="./media/starfield2.png" alt="drawing" width="400"/>
 
+There _might_ be a live broadcost on, right now, at https://www.twitch.tv/abstrac55
 
 Other future content might be falling autumn leaves, "sliding doors", fun with typography etc...
 
