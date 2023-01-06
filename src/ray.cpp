@@ -135,6 +135,8 @@ int rayWin4(int w, int h, int fps)
 
 int rayWin5(int w, int h, int fps, bool headless)
 {
+    SetTraceLogLevel(LOG_WARNING);
+
     if (headless == true)
     {
         SetConfigFlags(FLAG_WINDOW_HIDDEN | FLAG_MSAA_4X_HINT);
