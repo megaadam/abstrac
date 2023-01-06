@@ -30,8 +30,6 @@ Texture Starfield::get(float time)
     static RenderTexture2D canvas = LoadRenderTexture(res, res);
     static RenderTexture2D cam = LoadRenderTexture(m_width, m_height);
 
-    SetConfigFlags(FLAG_MSAA_4X_HINT);
-
     BeginTextureMode(canvas);
         ClearBackground(BLACK);
 
@@ -151,9 +149,11 @@ Star* Starfall::get(float time)
     }
 
     auto pos = interpol(time, startTime, endTime, startPos, endPos);
+    auto alpha = interpol(time, endTime - m_cfg->fadeOut, endTime, 255, 0);
     star.x = pos.x;
     star.y = pos.y;
     star.z = pos.z;
+    star.col.a = alpha;
 
     return &star;
 }

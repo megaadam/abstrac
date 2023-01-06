@@ -34,10 +34,11 @@ class StarfallCfg {
 public:
     float minLife = 1;
     float maxLife = 3.5;
-    float minDepth = 15;
+    float minDepth = 33;
     float maxDepth = 444;
-    float radius = 6.0;
-    float hiatus = 10; // Average seconds without any starfall
+    float radius = 16.0;
+    float hiatus = 12; // Average seconds without any starfall
+    float fadeOut = 6.0 / 25; // time to die in s
 };
 
 class Starfall {
@@ -59,11 +60,11 @@ private:
 class StarfieldCfg
 {
 public:
-    int count = 888;
+    int count = 1888;
     float zSpeed = 40;  // screen units / s
     float rotSpeed = 3.0;  // degrees / s
-    float minRadius = 2.9; // Radius in canvas pixels
-    float maxRadius = 11.0;
+    float minRadius = 4.0; // Radius in canvas pixels
+    float maxRadius = 16.0;
     float camRatio = 1.0;
     float depthRatio = 8;
 

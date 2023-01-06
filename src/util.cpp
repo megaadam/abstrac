@@ -5,7 +5,7 @@
 
 float interpol(float time, float startTime, float endTime, float f1, float f2)
 {
-    time = std::max(time, std::min(time, endTime)); // clamp time between start & end
+    time = std::max(std::min(time, endTime), startTime); // clamp time between start & end
 
     float r = (time - startTime) / (endTime - startTime);
     return f1 * (1.0 - r) + f2 * r;
