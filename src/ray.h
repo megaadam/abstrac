@@ -11,4 +11,4 @@ int rayWin(int w = defaultScreenWidth, int h = defaultScreenHeight, int fps = de
 int rayWin2(int w = defaultScreenWidth, int h = defaultScreenHeight, int fps = defaultFps);
 int rayWin3(int w = defaultScreenWidth, int h = defaultScreenHeight, int fps = defaultFps);
 int rayWin4(int w = defaultScreenWidth, int h = defaultScreenHeight, int fps = defaultFps);
-int rayWin5(int w = defaultScreenWidth, int h = defaultScreenHeight, int fps = defaultFps);
+int rayWin5(int w = defaultScreenWidth, int h = defaultScreenHeight, int fps = defaultFps, bool headless = false);

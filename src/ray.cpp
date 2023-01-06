@@ -4,6 +4,8 @@
 
 #include <math.h>
 
+#include <stdio.h>
+
 #include "starfield.h"
 #include "util.h"
 
@@ -131,18 +133,40 @@ int rayWin4(int w, int h, int fps)
     return 0;
 }
 
-int rayWin5(int w, int h, int fps)
+int rayWin5(int w, int h, int fps, bool headless)
 {
+    if (headless == true)
+    {
+        SetConfigFlags(FLAG_WINDOW_HIDDEN | FLAG_MSAA_4X_HINT);
+    }
+    else
+    {
+        SetConfigFlags(FLAG_WINDOW_UNDECORATED | FLAG_MSAA_4X_HINT);
+    }
+
     InitWindow(w, h, "abstrac - Starfield");
+    int frame = 0;
+    char buf[16] = {0};
 
     SetTargetFPS(fps);
     Starfield starfield(w, h, fps);
-    while (!WindowShouldClose())    // Detect window close button or ESC key
+    while (headless == true || WindowShouldClose() == false)    // Detect window close button or ESC key
     {
-        BeginDrawing();
-        DrawTexture(starfield.get(GetTime()), 0, 0, WHITE);
+        Texture tex = starfield.get(GetTime());
 
-        EndDrawing();
+        if(headless == false)
+        {
+            BeginDrawing();
+            DrawTexture(tex, 0, 0, WHITE);
+            EndDrawing();
+        }
+        else
+        {
+            sprintf(buf, "/mnt/ramdisk/starfield.%05i.png", (++frame)%2000);
+            Image img = LoadImageFromTexture(tex);
+            ExportImage(img, buf);
+            UnloadImage(img);
+        }
     }
 
     return 0;
@@ -157,8 +181,6 @@ Texture2D getTex(int w, int h, int32_t col) {
             raw[y*w + x] = col;
         }
     }
-
-    SetConfigFlags(FLAG_MSAA_4X_HINT);
 
     Image img{raw, w, h, 1, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8};
 

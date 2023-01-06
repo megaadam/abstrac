@@ -1,12 +1,17 @@
 // MIT License -- Copyright (c) 2023 Adam Horvath
 
-#include <unistd.h>
 #include <iostream>
+#include <string.h>
 
 #include "ray.h"
 
 int main(int argc, char** argv)
 {
     std::cout << "Hi there, World!" << std::endl;
-    return rayWin5(defaultScreenWidth, defaultScreenHeight, 60.0);
+    bool headless = false;
+    if(argc > 1 && strcmp(argv[1], "headless") == 0)
+    {
+        headless = true;
+    }
+    return rayWin5(defaultScreenWidth, defaultScreenHeight, 25.0, headless);
 }
