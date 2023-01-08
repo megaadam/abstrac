@@ -62,7 +62,7 @@ class StarfieldCfg
 public:
     int count = 1888;
     float zSpeed = 40;  // screen units / s
-    float rotSpeed = 3.0;  // degrees / s
+    float rotSpeed = 1.5;  // degrees / s
     float minRadius = 4.0; // Radius in canvas pixels
     float maxRadius = 16.0;
     float camRatio = 1.0;
