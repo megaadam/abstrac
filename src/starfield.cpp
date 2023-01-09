@@ -1,9 +1,8 @@
 // MIT License -- Copyright (c) 2023 Adam Horvath
 
 #include "starfield.h"
-#include <math.h>
-
 #include "util.h"
+
 Starfield::Starfield(int w, int h, int fps, std::unique_ptr<StarfieldCfg> cfg)
 {
     m_width = w;

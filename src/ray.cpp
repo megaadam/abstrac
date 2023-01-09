@@ -7,6 +7,8 @@
 #include <stdio.h>
 
 #include "starfield.h"
+#include "SlidingDoors.h"
+
 #include "util.h"
 
 Texture2D getTex(int w, int h, int32_t col);
@@ -152,12 +154,20 @@ int rayWin5(int w, int h, int fps, bool headless)
 
     SetTargetFPS(fps);
     Starfield starfield(w, h, fps);
-    while (headless == true || WindowShouldClose() == false)    // Detect window close button or ESC key
+    SlidingDoors doors(w, h, fps);
+
+    while (headless == true || WindowShouldClose() == false)
     {
         Texture tex = starfield.get(GetTime());
 
+        if (true) // WIP
+        {
+            tex = doors.get(GetTime());
+        }
+
         if(headless == false)
         {
+            ClearBackground(BLACK);
             BeginDrawing();
             DrawTexture(tex, 0, 0, WHITE);
             EndDrawing();
