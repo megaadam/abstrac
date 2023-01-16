@@ -7,25 +7,21 @@
 #include <random>
 #include <vector>
 
+#include "Anim.h"
+
 class Door
 {
 public:
-    Door(float _x, float _y, float _w, float _h, Color _col, float _ol, float _s);
+    Door(Anim<float>& _x, Anim<float>& _y, Anim<float>& _w, Anim<float>& _h, Color _col, float _ol);
 
-    float x;
-    float y;
-    float w;
+    Anim<float> x;
+    Anim<float> y;
+    Anim<float> w;
+    Anim<float> h;
 
-    float h;
     Color col;
     float ol; // outline width
     float speed;
-
-    void update(float time);
-
-private:
-    float scale = 0.0;
-    float w_internal;
 };
 
 class DoorsCfg
@@ -49,7 +45,7 @@ public:
     Texture get(float time);
 
 private:
-    Door newDoor();
+    Door newDoor(float time);
 
     std::vector<Door> m_doors;
     std::unique_ptr<DoorsCfg> m_cfg;

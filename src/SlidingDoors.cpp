@@ -4,6 +4,7 @@
 
 #include <algorithm>
 
+#include "Anim.h"
 #include "util.h"
 
 SlidingDoors::SlidingDoors(int w, int h, int fps, std::unique_ptr<DoorsCfg> cfg)
@@ -14,7 +15,8 @@ SlidingDoors::SlidingDoors(int w, int h, int fps, std::unique_ptr<DoorsCfg> cfg)
 
     for (int i = 0; i < m_cfg->count; ++i)
     {
-        m_doors.push_back(newDoor());
+        auto door = newDoor(0);
+        m_doors.push_back(door);
     }
 }
 
@@ -34,7 +36,11 @@ Texture SlidingDoors::get(float time)
 
         for(const auto& door: m_doors)
         {
-            Rectangle rec{door.x - door.w / 2, door.y - door.h / 2, door.w, door.h };
+            auto x = door.x.get(time);
+            auto y = door.y.get(time);
+            auto w = door.w.get(time);
+            auto h = door.h.get(time);
+            Rectangle rec{x - w / 2, y - h / 2, w, h };
             DrawRectanglePro(rec, Vector2{0, 0}, 0, door.col);
         }
         EndBlendMode();
@@ -42,14 +48,17 @@ Texture SlidingDoors::get(float time)
         BeginBlendMode(BLEND_ADD_COLORS);
         for(auto& door: m_doors)
         {
-            Rectangle rec{door.x - door.w / 2, door.y - door.h / 2, door.w, door.h };
+            auto x = door.x.get(time);
+            auto y = door.y.get(time);
+            auto w = door.w.get(time);
+            auto h = door.h.get(time);
+            Rectangle rec{x - w / 2, y - h / 2, w, h };
             Color c2 = door.col;
             c2.a = 210;
             DrawRectangleLinesEx(rec, 4.0, c2);
-            door.update(deltaTime);
-            if (door.x + door.w / 2 < 0.0 || door.x - door.w / 2 > m_width)
+            if (x + w / 2 < 0.0 || x - w / 2 > m_width)
             {
-                door = newDoor();
+                door = newDoor(time);
             }
         }
         EndBlendMode();
@@ -58,7 +67,7 @@ Texture SlidingDoors::get(float time)
     return canvas.texture;
 }
 
-Door SlidingDoors::newDoor()
+Door SlidingDoors::newDoor(float time)
 {
     static std::random_device dev;
     static std::default_random_engine eng(dev());
@@ -66,41 +75,42 @@ Door SlidingDoors::newDoor()
     static std::uniform_real_distribution<float> v_dist(0.1 * m_height, 0.9 * m_height);
     static std::uniform_real_distribution<float> short_dist(0.1 * m_height, 0.2 * m_height);
     static std::uniform_real_distribution<float> long_dist(0.2 * m_height, 0.6 * m_height);;
-    static std::uniform_real_distribution<float> speed_dist(m_width / 20, m_width / 8);;
+    static std::uniform_real_distribution<float> time_dist(6, 10);
 
 
     float x = h_dist(eng);
     float y = v_dist(eng);
     float w = long_dist(eng);
     float h = short_dist(eng);
-    float speed = speed_dist(eng);
+
+    Anim<float> xa;
+    float t2 = time + time_dist(eng);
     if (x > m_width / 2)
     {
-        speed = -speed;
+        xa = Anim<float>(time, t2, x, x - m_width);
     }
+    else
+    {
+        xa = Anim<float>(time, t2, x, x + m_width);
+    }
+
+    Anim<float> ya(time, time, y, y);
+    Anim<float> wa(time, time+2, 0, w);
+    Anim<float> ha(time, time, h, h);
+
 
     Color col = rndHLS(0.0, 1.0, m_cfg->minL, m_cfg->maxL, m_cfg->minS, m_cfg->maxS, 144);
 
-    return {x, y, w, h, col, 1.0f, speed};
-
+    Anim<float> a(1,2,3,4);
+    return Door(xa, ya, wa, ha, col, 4);
 }
 
-Door::Door(float _x, float _y, float _w, float _h, Color _col, float _ol, float _s)
+Door::Door(Anim<float>& _x, Anim<float>& _y, Anim<float>& _w, Anim<float>& _h, Color _col, float _ol)
 {
     x = _x;
     y = _y;
-    w = 0.0;
-    w_internal = _w;
+    w = _w;
     h = _h;
     col = _col;
     ol = _ol;
-    speed = _s;
-}
-
-
-void Door::update(float deltaTime)
-{
-    x += deltaTime * speed;
-    scale = std::min(scale + deltaTime* 0.33f, 1.0f);
-    w = w_internal * scale;
 }
