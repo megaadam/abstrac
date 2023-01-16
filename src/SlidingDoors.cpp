@@ -23,15 +23,12 @@ SlidingDoors::SlidingDoors(int w, int h, int fps, std::unique_ptr<DoorsCfg> cfg)
 Texture SlidingDoors::get(float time)
 {
     static float lastTime = 0.0;
-    float deltaTime = lastTime > 0 ? time - lastTime : 0.0;
-    lastTime = time;
 
-     RenderTexture2D canvas;
-    canvas = LoadRenderTexture(m_width, m_height);
+    static RenderTexture2D canvas = LoadRenderTexture(m_width, m_height);
     // static RenderTexture2D cam = LoadRenderTexture(m_width, m_height); // animated camera
 
     BeginTextureMode(canvas);
-        ClearBackground(WHITE);
+        ClearBackground(RAYWHITE);
         BeginBlendMode(BLEND_ALPHA);
 
         for(const auto& door: m_doors)
@@ -56,7 +53,7 @@ Texture SlidingDoors::get(float time)
             Color c2 = door.col;
             c2.a = 210;
             DrawRectangleLinesEx(rec, 4.0, c2);
-            if (x + w / 2 < 0.0 || x - w / 2 > m_width)
+            if (x + w / 2 < 0.0 || x - w / 2 > m_width || y + h / 2 < 0.0 || y - h / 2 > m_height)
             {
                 door = newDoor(time);
             }
@@ -76,6 +73,7 @@ Door SlidingDoors::newDoor(float time)
     static std::uniform_real_distribution<float> short_dist(0.1 * m_height, 0.2 * m_height);
     static std::uniform_real_distribution<float> long_dist(0.2 * m_height, 0.6 * m_height);;
     static std::uniform_real_distribution<float> time_dist(6, 10);
+    static std::uniform_real_distribution<float> coin_flip(0, 2);
 
 
     float x = h_dist(eng);
@@ -84,20 +82,40 @@ Door SlidingDoors::newDoor(float time)
     float h = short_dist(eng);
 
     Anim<float> xa;
-    float t2 = time + time_dist(eng);
-    if (x > m_width / 2)
-    {
-        xa = Anim<float>(time, t2, x, x - m_width);
-    }
-    else
-    {
-        xa = Anim<float>(time, t2, x, x + m_width);
-    }
-
-    Anim<float> ya(time, time, y, y);
+    Anim<float> ya;
     Anim<float> wa(time, time+2, 0, w);
     Anim<float> ha(time, time, h, h);
 
+    float t2 = time + time_dist(eng);
+
+    if (coin_flip(eng) < 1.0)
+    {   // horizontal Anim
+        if (x > m_width / 2)
+        {
+            xa = Anim<float>(time, t2, x, x - m_width - w / 2);
+        }
+        else
+        {
+            xa = Anim<float>(time, t2, x, x + m_width + w / 2);
+        }
+        ya = Anim<float>(time, time, y, y);
+        wa = Anim<float>(time, time+2, 0, w);
+        ha = Anim<float>(time, time, h, h);
+    }
+    else
+    {   // vertical Anim
+        if (y > m_height / 2)
+        {
+            ya = Anim<float>(time, t2, y, y - m_height - w / 2);
+        }
+        else
+        {
+            ya = Anim<float>(time, t2, y, y + m_height + w / 2);
+        }
+        xa = Anim<float>(time, time, x, x);
+        wa = Anim<float>(time, time, h, h);
+        ha = Anim<float>(time, time+2, 0, w);
+    }
 
     Color col = rndHLS(0.0, 1.0, m_cfg->minL, m_cfg->maxL, m_cfg->minS, m_cfg->maxS, 144);
 

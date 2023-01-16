@@ -31,7 +31,7 @@ public:
 
     // Door colour minmax (H)LS
     float minL = 0.4;
-    float maxL = 8.0;
+    float maxL = 0.8;
     float minS = 0.8;
     float maxS = 1.0;
 };
