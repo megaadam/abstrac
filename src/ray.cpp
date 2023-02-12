@@ -155,20 +155,11 @@ int rayWin5(int w, int h, int fps, bool headless)
     SetTargetFPS(fps);
     Starfield starfield(w, h, fps);
     SlidingDoors doors(w, h, fps);
-    Image img; 
+    Image img;
     double lastTime = 0;
     Texture tex;
     while (WindowShouldClose() == false)
     {
-        frame = ++frame % 2000;
-        // if (frame > 100) 
-        // {
-        //     UnloadTexture(tex);
-        //     //UnloadImage(img);
-        //     CloseWindow();
-        //     return 0;
-        // }
-
 
         double t = GetTime();
         auto elapsed = t - lastTime;
@@ -176,8 +167,8 @@ int rayWin5(int w, int h, int fps, bool headless)
         lastTime = t;
 
 
-
-        if (frame >=1000) 
+        frame = ++frame % 2000;
+        if (frame >=1000)
         {
             tex = doors.get(GetTime());
         }
@@ -196,7 +187,7 @@ int rayWin5(int w, int h, int fps, bool headless)
         else
         {
 
-            sprintf(buf, "/tmp/ramdisk/starfield.%05i.raw", frame);
+            sprintf(buf, "/ramdisk/abstrac.%05i.raw", frame);
             BeginDrawing();
             img = LoadImageFromTexture(tex);
             ExportImage(img, buf);

@@ -72,7 +72,7 @@ Door SlidingDoors::newDoor(float time)
     static std::uniform_real_distribution<float> v_dist(0.1 * m_height, 0.9 * m_height);
     static std::uniform_real_distribution<float> short_dist(0.1 * m_height, 0.2 * m_height);
     static std::uniform_real_distribution<float> long_dist(0.2 * m_height, 0.6 * m_height);;
-    static std::uniform_real_distribution<float> time_dist(6, 10);
+    static std::uniform_real_distribution<float> time_dist(8, 18);
     static std::uniform_real_distribution<float> coin_flip(0, 2);
 
 

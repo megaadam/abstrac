@@ -7,6 +7,8 @@
 #include <random>
 #include <vector>
 
+#include "Anim.h"
+
 class Star
 {
 public:
@@ -88,8 +90,10 @@ public:
 
 private:
     Star newStar(bool maxDepth = false, float fade = 1.0);
+    void init(float time);
 
     Starfall m_starfall = Starfall();
+    Anim<float> m_starfade;
     int m_width;
     int m_height;
     std::unique_ptr<StarfieldCfg> m_cfg;

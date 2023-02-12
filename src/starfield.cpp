@@ -9,14 +9,7 @@ Starfield::Starfield(int w, int h, int fps, std::unique_ptr<StarfieldCfg> cfg)
     m_height = h;
     m_cfg = std::unique_ptr<StarfieldCfg> (new StarfieldCfg{});
 
-    m_stars.reserve(m_cfg->count);
-
-
-    for (int i = 0; i < cfg->count; ++i)
-    {
-        Star star = newStar(false, 0.0);
-        m_stars.push_back(star);
-    }
+    init(0.0);
 }
 
 Texture Starfield::get(float time)
@@ -24,6 +17,12 @@ Texture Starfield::get(float time)
     static float lastTime = 0.0;
     static float rot = 0.0;
     float deltaTime = lastTime > 0 ? time - lastTime : 0.0;
+    if (deltaTime > 2.0)
+    {
+        init(time);
+        deltaTime = 0.0;
+    }
+
     lastTime = time;
     auto res = m_cfg->canvasRes;
     static RenderTexture2D canvas = LoadRenderTexture(res, res);
@@ -39,18 +38,15 @@ Texture Starfield::get(float time)
             float rad = star.radius * 100 / star.z;
 
             Color starCol = star.col;
-            if(star.fade < 1.0) {
-                star.fade += deltaTime / m_cfg->fadeIn;
-                starCol.a = int(star.fade * 255);
-            }
+            starCol.a = m_starfade.get(time);
 
-            // DrawCircleV(Vector2{x, y}, rad, star.col);
             DrawCircleGradient(x, y, rad, starCol, Color{255, 255, 255, 0});
 
             star.z -= deltaTime * m_cfg->zSpeed;
             if (star.z < 10)
             {
                 star = newStar(true, 0.0);
+                printf(".");
             }
         }
 
@@ -93,6 +89,18 @@ Star Starfield::newStar(bool maxDepth, float fade)
                 coord_dist(eng) * z / 100 / depthSqueze, z, radius_dist(eng), col, fade);
 }
 
+void Starfield::init(float time)
+{
+    m_starfade = Anim<float>(time, time + 2.0, 0.0, 255.0);
+    m_stars.clear();
+    m_stars.reserve(m_cfg->count);
+
+    for (int i = 0; i < m_cfg->count; ++i)
+    {
+        Star star = newStar(false, 0.0);
+        m_stars.push_back(star);
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // class Starfall
