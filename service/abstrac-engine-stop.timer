@@ -1,0 +1,9 @@
+[Unit]
+Description=Terminates abstrac-engine.service
+
+[Timer]
+Unit=abstrac-engine-stop.service
+OnCalendar=*-*-* 01:02:00
+
+[Install]
+WantedBy=timers.target

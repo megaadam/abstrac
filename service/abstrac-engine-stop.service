@@ -1,0 +1,8 @@
+[Unit]
+Description=Abstrac Rendering Engine
+
+[Service]
+ExecStart=systemctl stop abstrac-engine
+
+[Install]
+WantedBy=default.target

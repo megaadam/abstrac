@@ -1,0 +1,11 @@
+[Unit]
+Description=Abstrac Rendering Engine
+Requires=abstrac-ffmpeg.service
+
+[Service]
+User=a
+Group=a
+ExecStart=/usr/bin/abstrac-engine-starter
+
+[Install]
+WantedBy=default.target

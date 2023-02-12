@@ -1,0 +1,9 @@
+[Unit]
+Description=Starts abstrac-engine.service
+
+[Timer]
+Unit=abstrac-engine.service
+OnCalendar=Mon..Sat *-*-* 08:58:00
+
+[Install]
+WantedBy=timers.target
