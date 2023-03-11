@@ -2,4 +2,4 @@
 
 # host system MUST have a running X server or else abstrac-engine will have no OpenGL context
 export DISPLAY=:0
-abstrac-engine headless
+abstrac-engine headless &

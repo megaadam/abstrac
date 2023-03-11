@@ -3,6 +3,7 @@ Description=Abstrac Rendering Engine
 Requires=abstrac-ffmpeg.service
 
 [Service]
+Type=forking
 User=a
 Group=a
 ExecStart=/usr/bin/abstrac-engine-starter
