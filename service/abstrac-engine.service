@@ -1,11 +1,11 @@
 [Unit]
 Description=Abstrac Rendering Engine
-Requires=abstrac-ffmpeg.service
 
 [Service]
 Type=forking
 User=a
 Group=a
+EnvironmentFile=/home/a/.priv/twtch.conf
 ExecStart=/usr/bin/abstrac-engine-starter
 
 [Install]
