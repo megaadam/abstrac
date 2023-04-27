@@ -3,3 +3,6 @@
 # host system MUST have a running X server or else abstrac-engine will have no OpenGL context
 export DISPLAY=:0
 abstrac-engine headless &
+
+# 2000 frames / 25 fps => 80s to fill ram buffer => with margin 90s 
+sleep 90 && ffmpeg -loglevel info -loop 1 -f image2 -re -framerate 25  -pattern_type glob -pix_fmt rgb32 -s 800x450 -i '/ramdisk/*.raw'  -preset ultrafast   -c:v libx264 -pix_fmt yuv420p -s 800x450 -f flv -force_key_frames 2 -b:v 400k -minrate 200k -maxrate 800k -bufsize 2m rtmp://arn04.contribute.live-video.net/app/${twtch} &

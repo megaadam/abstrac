@@ -29,8 +29,6 @@ deploy: build
 	scp service/abstrac-engine-stop.timer   $(REMOTE_SYSTEMD)
 	scp service/abstrac-engine-stop.service   $(REMOTE_SYSTEMD)
 
-	scp service/abstrac-ffmpeg.service $(REMOTE_SYSTEMD)
-
 	ssh $(REMOTE) systemctl daemon-reload
 	ssh $(REMOTE) systemctl start abstrac-engine.service
 	ssh $(REMOTE) systemctl start abstrac-engine.timer
@@ -40,4 +38,3 @@ deploy: build
 	ssh $(REMOTE) systemctl enable abstrac-engine-stop.timer
 
 	ssh $(REMOTE) systemctl status abstrac-engine.service
-	ssh $(REMOTE) systemctl status abstrac-ffmpeg.service
