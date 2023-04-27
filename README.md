@@ -3,12 +3,12 @@ Streaming Abstract Pixel Art
 
 
 ## What is This Then ?
-**Q:** The world's most overengineered *Starfield* screen-saver??<br>
+**Q:** The world's most over-engineered screen-saver?<br>
 **A:** I am not sure... there might be even worse.
 
 <p float="center">
-<img src="./media/starfield1.png"      width="48%" title="The Classic Starfield Animation"/>
-<img src="./media/sliding-doors1.png"  width="48%" title="&quot;Sliding Doors&quot; Animation"/>
+<img src="./media/starfield1.png"      width="48%" title="The Classic &quot;Starfield&quot; Animation"/>
+<img src="./media/sliding-doors1.png"  width="48%" title="My &quot;Sliding Doors&quot; Animation"/>
 </p>
 
 ## Live Stream
@@ -25,44 +25,46 @@ I want to create an infrastructure where I create new abstract animations, and:
 * quickly tweak animation parameters
 * easily deploy the "animation streaming services" to any server, including cloud (e.g. `make deploy`)
 * configure schedules and layers:
-    * Multiple layers,
-    * eg. overlay an animation with a blurred version of itself
+    * Multiple layers, e.g. overlay an animation with a blurred version of itself
 * another aspect of configuration is to record a slightly longer loop, and stream that, to save CPU power, and the planet
-* future animations might be: falling autumn leaves, fun with typography etc etc...
+* future animations might be: falling autumn leaves, fun with typography, animated CPU/memory load, etc etc...
 
 
 ## System Architecture
-### The Services
-To make the live stream happen, I am using two systemd services.
-* `abstrac-engine.service` (the _rendering service_)
-* `abstrac-ffmpeg.service` (the _streaming service_)
+### The Service
+To make the live stream happen the `abstrac-engine.service` comprises two processes:
+* `abstrac` (the _rendering process_)
+* `abstrac-ffmpeg.service` (the _streaming sprocess_)
 
-`abstrac-engine.service` is the C++ executable that renders the animations to be
+`abstrac` is the C++ executable that renders the animations to be
 streamed. For rendering I use **`raylib`**,  which is a nice C++ wrapper around
 GLFW, which is an OpenGL wrapper. At some future point in time, it may happen
 that I will use OpenGL directly. But with my near zero OpenGL experience,
 **`raylib`** gave me a tremendous kickstart.
 
-`abstrac-ffmpeg.service` is just running a single `ffmpeg`-command that streams the rendered images to Twitch.
+`ffmpeg` is just running one of those long `ffmpeg`-commands that streams the rendered images to Twitch.
 
 
-### Service Interoperation
+### Process Inter-Op
 There is no intricate communication protocol here! The interface between the two
-services, is simply a circular RAM disk buffer.
+processes, is simply a circular RAM disk buffer.
 
 The rendering service is writing images to a RAM disk
-(numbered `*.00000 - *01999`). It is looping through the numbers.
+(numbered `*.00000 - *.01999`). It is looping through the 2000 numbers.
 The streaming service is then looping through the same images. The rich `ffmpeg`
 command line interface provides a straightforward way of streaming a loop of
 images on a wildcard filepath. The file format is uncompressed raw 32-bit RGBA.
 (Initially I used png, but after a while I noticed that the **`raylib`** png conversion was disproportionately CPU-intensive!)
 
-Currently, there is no safeguard to prevent read/write race
+Currently, I have no safeguard to prevent read/write race
 conditions. But the services seem to cope quite well anyway.
 
-The service files, including the full `ffmpeg` command, and stream scheduling,
+The service file, including the timers and the full `ffmpeg` command, and stream scheduling,
 are [all in this repo](https://github.com/megaadam/abstrac/tree/main/service).
 
+### The Schedule
+To save the planet, the service is sleeping at night. Instead of going into `crontab` weirdness, I
+have decided to stay within the domain and rely on `systemd`  timers.
 
 ## Streaming Format
 * Flash Video container format over the RTMP streaming protocol
